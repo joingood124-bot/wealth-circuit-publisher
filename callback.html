@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Authorization complete — Wealth Circuit Publisher</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #0d0d0d; color: #f2f2f2; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; box-sizing: border-box; }
+  .box { max-width: 560px; width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 32px 28px; text-align: center; }
+  h1 { color: #f5c518; margin: 0 0 8px; font-size: 1.4rem; }
+  p.sub { color: #aaa; margin: 0 0 20px; font-size: .95rem; }
+  #code { font-family: ui-monospace, monospace; font-size: 1.1rem; word-break: break-all; background: #0d0d0d; border: 1px dashed #f5c518; border-radius: 10px; padding: 18px 14px; margin: 0 0 16px; color: #fff; }
+  button { background: #f5c518; color: #0d0d0d; border: 0; border-radius: 10px; padding: 12px 28px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+  button:active { transform: scale(.97); }
+  .meta { margin-top: 16px; font-size: .8rem; color: #777; word-break: break-all; }
+  .error { color: #ff6b6b; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1 id="title">Authorization complete</h1>
+  <p class="sub" id="sub">Copy this one-time code and paste it into Wealth Circuit Publisher to finish connecting your TikTok account.</p>
+  <div id="code">…</div>
+  <button id="copy" onclick="copyCode()">Copy code</button>
+  <div class="meta" id="meta"></div>
+</div>
+<script>
+  function copyCode() {
+    const t = document.getElementById('code').innerText;
+    navigator.clipboard.writeText(t).then(() => {
+      const b = document.getElementById('copy');
+      b.innerText = 'Copied!';
+      setTimeout(() => b.innerText = 'Copy code', 1500);
+    });
+  }
+  const q = new URLSearchParams(location.search);
+  const code = q.get('code'), state = q.get('state'), err = q.get('error'), errd = q.get('error_description');
+  if (err) {
+    document.getElementById('title').innerText = 'Authorization failed';
+    document.getElementById('title').classList.add('error');
+    document.getElementById('code').innerText = err + (errd ? ': ' + errd : '');
+    document.getElementById('sub').innerText = 'Please go back and try connecting again.';
+    document.getElementById('copy').style.display = 'none';
+  } else if (code) {
+    document.getElementById('code').innerText = code;
+    document.getElementById('meta').innerText = state ? ('Account: ' + state.split(':')[0]) : '';
+  } else {
+    document.getElementById('title').innerText = 'No authorization response';
+    document.getElementById('code').innerText = 'No code was received. Start from the Connect button in Wealth Circuit Publisher.';
+    document.getElementById('copy').style.display = 'none';
+  }
+</script>
+</body>
+</html>
